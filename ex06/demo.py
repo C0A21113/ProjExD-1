@@ -112,7 +112,7 @@ class Block(pg.sprite.Sprite):#ブロッククラス 山 赤嶺
         self.image = pg.Surface((40, 20))
         self.image.set_colorkey((0, 0, 0))
         if judg > 0.5:#ランダムか星型か判定
-            pg.draw.rect(self.image, random.choice(lst), (0,0,30,10))
+            pg.draw.rect(self.image, random.choice(lst), (0,0,30,10)) #lstからrandom choiceで色を取得する
         else:
             if leststar[y][x] == 1:
                 colours = "red"
@@ -125,11 +125,11 @@ class Block(pg.sprite.Sprite):#ブロッククラス 山 赤嶺
         self.rect.top = 5 + scrn.rect.top + y * self.rect.bottom
 
 
-class Sub_screen(): #スタート画面 宮島
-    def button_click(event):
+class Sub_screen(): #サブスクリーンクラス
+    def button_click(event):#ボタンクリック
         tkm.showwarning("ルール","マウスパッドをタップでスタート!ポインターを左右に動かしてボールをブロックにぶつけよう!!")
 
-    def start(self):
+    def start(self):#スタート画面 宮島
         root = tk.Tk()
         root.title("start")
         root.geometry("600x250")
@@ -152,11 +152,10 @@ class Sub_screen(): #スタート画面 宮島
                         )
         label.pack()
         root.mainloop()
-        self.timerFlag = True
 
     def end(self, Score, scrn):#終了画面 赤嶺 山
         self.font = pg.font.SysFont(None,55)
-        text = self.font.render("GAME OVER",True,(255,0,0))
+        text = self.font.render("GAME OVER",True,(255,0,0)) #ゲームオーバーと表示
         scrn.blit(text,(200, 300))
         pg.display.update()
         root = tk.Tk()
@@ -316,10 +315,14 @@ def main():# 山
             for event in pg.event.get():
                 if event.type == KEYDOWN and event.key == K_SPACE:
                     poseFlag = not poseFlag
-        #ライフ判定orブロックが全て消えたら
-        if Ball.count == 0 or len(blocks) == 0:
-            bgm.Gameclear_BGM()
+        #ライフ判定
+        if Ball.count == 0:
+            bgm.Gameover_BGM()
             subscreen.end(score, scrn.sfc)
+            return
+        if len(blocks) == 0:#ブロックが全て消えたら
+            bgm.Gameclear_BGM()
+            subscreen.end()
             return
         #イベント判定
         for event in pg.event.get():
